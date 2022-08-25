@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "985726437324",
+    "project_id": "ortapazar-af0d4",
+    "storage_bucket": "ortapazar-af0d4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985726437324:android:6a5b6ce680ae81a8637f69",
+        "android_client_info": {
+          "package_name": "com.dogukanozgurylmz.ortapazar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985726437324-dl4040nktrej6p2ullf3qlrridc7ghdq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dogukanozgurylmz.ortapazar",
+            "certificate_hash": "00fed543ac7c3c0098af8166ec931f588cd19443"
+          }
+        },
+        {
+          "client_id": "985726437324-4lc9m8j07pkt626s471qpf5v4a6h78ts.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXPpL8uHu2w3mq1rRxqVVIVrx4j3DIpxU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "985726437324-4lc9m8j07pkt626s471qpf5v4a6h78ts.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "985726437324-0sc4euruscp2fn2bbeuj8ba13hq655ub.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.dogukanozgurylmz.ortapazar"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
