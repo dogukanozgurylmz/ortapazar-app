@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:ortapazar/core/constants/app_constant.dart';
 import 'package:ortapazar/feature/ortapazar/domain/entities/news_entity.dart';
 import 'package:ortapazar/feature/ortapazar/domain/usecases/news/get_news_list.dart';
@@ -19,6 +22,7 @@ class HomeCubit extends Cubit<HomeState> {
   final GetSavedNewsListUseCase _getSavedNewsList;
   final CreateSavedNewsUseCase _createSavedNews;
   final DeleteSavedNewsUseCase _deleteSavedNews;
+  String url = "";
 
   HomeCubit({
     required GetNewsListUseCase getNewsList,
@@ -52,6 +56,7 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> getNews() async {
+    emit(state.copyWith(isLoading: true));
     final List<NewsEntity> newsList = [];
     final result = await _getNewsList.call(
       GetNewsListParams(
@@ -62,11 +67,39 @@ class HomeCubit extends Cubit<HomeState> {
     final either = result.fold((l) => l, (r) => r);
     if (either is List<NewsEntity>) {
       newsList.addAll(either);
-      _newsList = newsList;
-      emit(state.copyWith(news: _newsList));
+      await downloadImage(newsList);
+      // _newsList = newsList;
+      // emit(state.copyWith(news: _newsList));
     } else {
       return;
     }
+  }
+
+  Future<void> downloadImage(List<NewsEntity> newsEntities) async {
+    for (var newsEntity in newsEntities) {
+      var documentSnapshot = await FirebaseFirestore.instance
+          .collection('news')
+          .doc(newsEntity.id)
+          .get();
+      var data = documentSnapshot.data();
+      if (data == null) return;
+      if (data.containsKey('image')) {
+        url =
+            await FirebaseStorage.instance.ref(data['image']).getDownloadURL();
+        NewsEntity entity = NewsEntity(
+            id: newsEntity.id,
+            title: newsEntity.title,
+            content: newsEntity.content,
+            image: url,
+            addedDate: newsEntity.addedDate,
+            isSaved: newsEntity.isSaved);
+        _newsList.add(entity);
+      }
+    }
+    emit(state.copyWith(
+      isLoading: false,
+      news: _newsList,
+    ));
   }
 
   Future<void> getSavedNews() async {

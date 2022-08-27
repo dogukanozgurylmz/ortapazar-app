@@ -12,6 +12,7 @@ abstract class SavedNewsDataSource {
   );
   Future<String?> createSavedNews(
     String collectionId,
+    String documentId,
     Map<String, dynamic> data,
   );
   Future<String?> updateSavedNews(
@@ -56,10 +57,12 @@ class SavedNewsDataSourceImpl extends FirebaseDataManager
   @override
   Future<String?> createSavedNews(
     String collectionId,
+    String documentId,
     Map<String, dynamic> data,
   ) async {
     return await OrtapazarDatabase().createDatabaseDocument(
       collectionId,
+      documentId,
       data,
     );
   }

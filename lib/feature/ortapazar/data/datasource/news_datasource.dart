@@ -12,6 +12,7 @@ abstract class NewsDataSource {
   );
   Future<String?> createNews(
     String collectionId,
+    String documentId,
     Map<String, dynamic> data,
   );
   Future<String?> updateNews(
@@ -41,10 +42,12 @@ class NewsDataSourceImpl extends FirebaseDataManager implements NewsDataSource {
   @override
   Future<String?> createNews(
     String collectionId,
+    String documentId,
     Map<String, dynamic> data,
   ) async {
     return await OrtapazarDatabase().createDatabaseDocument(
       collectionId,
+      documentId,
       data,
     );
   }

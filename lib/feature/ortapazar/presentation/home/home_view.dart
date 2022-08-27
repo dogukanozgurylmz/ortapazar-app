@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ortapazar/core/widgets/blur_background.dart';
-import 'package:ortapazar/feature/ortapazar/presentation/create_news/create_news_view.dart';
 import 'package:photo_view/photo_view.dart';
 
 import '../../../../core/constants/text_style_constant.dart';
@@ -25,12 +24,14 @@ class HomeView extends StatelessWidget {
                 physics: const PageScrollPhysics(),
                 itemCount: state.news.length,
                 itemBuilder: (context, index) {
-                  return _buildFeedScreen(
-                    state,
-                    cubit,
-                    index,
-                    context,
-                  );
+                  return state.isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : _buildFeedScreen(
+                          state,
+                          cubit,
+                          index,
+                          context,
+                        );
                 },
               ),
             ],
@@ -47,7 +48,9 @@ class HomeView extends StatelessWidget {
     BuildContext context,
   ) {
     return GestureDetector(
-      onTap: () => cubit.init(),
+      onTap: () async => {
+        await cubit.init(),
+      },
       onLongPress: () {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -62,9 +65,7 @@ class HomeView extends StatelessWidget {
         decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(
-              state.news[index].image.isNotEmpty
-                  ? state.news[index].image
-                  : "https://wallpaperaccess.com/full/1958270.jpg",
+              state.news[index].image,
             ),
             fit: BoxFit.cover,
           ),

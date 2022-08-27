@@ -45,6 +45,7 @@ class SavedNewsRepositoryImpl implements SavedNewsRepository {
       () async {
         final String? result = await _savedNewsDatasource.createSavedNews(
           collectionId,
+          documentId,
           data,
         );
         return result;

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -5,25 +7,16 @@ import 'package:ortapazar/feature/ortapazar/presentation/create_news/cubit/creat
 import 'package:ortapazar/widgets/form_textfield_widget.dart';
 import 'package:ortapazar/widgets/form_title_widget.dart';
 
+import '../../../../core/constants/text_style_constant.dart';
 import '../../../../main.dart';
 
-class CreateNewsView extends StatefulWidget {
+class CreateNewsView extends StatelessWidget {
   const CreateNewsView({Key? key}) : super(key: key);
-
-  @override
-  State<CreateNewsView> createState() => _CreateNewsViewState();
-}
-
-class _CreateNewsViewState extends State<CreateNewsView> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context),
+      appBar: _buildAppBar(context),
       body: BlocProvider(
         create: (context) => getIt<CreateNewsCubit>(),
         child: BlocBuilder<CreateNewsCubit, CreateNewsState>(
@@ -32,14 +25,15 @@ class _CreateNewsViewState extends State<CreateNewsView> {
             return SingleChildScrollView(
               child: Column(
                 children: [
+                  const SizedBox(height: 15),
                   state.file.path.isNotEmpty
                       ? Image.file(
                           state.file,
-                          width: MediaQuery.of(context).size.width,
-                          height: 250,
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          height: MediaQuery.of(context).size.height * 0.5,
                           fit: BoxFit.cover,
                         )
-                      : const FlutterLogo(),
+                      : const SizedBox.shrink(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -97,27 +91,15 @@ class _CreateNewsViewState extends State<CreateNewsView> {
     );
   }
 
-  AppBar buildAppBar(BuildContext context) {
+  AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      centerTitle: true,
-      backgroundColor: const Color(0xffF3F3F3),
-      elevation: 0,
-      leading: GestureDetector(
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-          child: const Icon(
-            Icons.arrow_back_ios_new,
-            color: Colors.black,
-          )),
-      title: const Text(
-        "Haber Gönder",
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-          fontSize: 32,
-        ),
+      title: Text(
+        "Haber Ekle",
+        style: TextStyleConstant.APP_BAR_STYLE,
       ),
+      toolbarHeight: 45,
+      backgroundColor: const Color(0xff1C6D00),
+      elevation: 0,
     );
   }
 }

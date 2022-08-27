@@ -13,10 +13,12 @@ class FirebaseDataManager {
 class OrtapazarDatabase extends FirebaseDataManager {
   Future<String?> createDatabaseDocument(
     String collectionId,
+    String documentId,
     Map<String, dynamic> data,
   ) async {
     try {
-      var result = await firestore.collection(collectionId).add(data);
+      Future<void> result =
+          firestore.collection(collectionId).doc(documentId).set(data);
       if (result.toString().isNotEmpty) {
         return result.toString();
       } else {

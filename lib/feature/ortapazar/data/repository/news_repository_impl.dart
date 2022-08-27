@@ -46,6 +46,7 @@ class NewsRepositoryImpl implements NewsRepository {
       () async {
         final String? result = await _newsDatasource.createNews(
           collectionId,
+          documentId,
           data,
         );
         return result;
