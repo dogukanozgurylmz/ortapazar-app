@@ -1,8 +1,8 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 
 class NewsEntity extends Equatable {
   final String id;
+  final String currentUser;
   final String title;
   final String content;
   final String image;
@@ -11,6 +11,7 @@ class NewsEntity extends Equatable {
 
   const NewsEntity({
     required this.id,
+    required this.currentUser,
     required this.title,
     required this.content,
     required this.image,
@@ -21,6 +22,7 @@ class NewsEntity extends Equatable {
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'id': id,
+      'current_user': currentUser,
       'title': title,
       'content': content,
       'image': image,
@@ -29,19 +31,22 @@ class NewsEntity extends Equatable {
     };
   }
 
-  NewsEntity.fromJson(Map<String, Object?> json)
-      : this(
-          id: json['id']! as String,
-          title: json['title']! as String,
-          content: json['content']! as String,
-          image: json['image']! as String,
-          addedDate: json['added_date']! as String,
-          isSaved: json['is_saved'] as bool,
-        );
+  factory NewsEntity.fromJson(Map<String, dynamic> json) {
+    return NewsEntity(
+      id: json['id']! as String,
+      currentUser: json['current_user'] as String,
+      title: json['title']! as String,
+      content: json['content']! as String,
+      image: json['image']! as String,
+      addedDate: json['added_date']! as String,
+      isSaved: json['is_saved'] as bool,
+    );
+  }
 
   @override
   List<Object?> get props => [
         id,
+        currentUser,
         title,
         content,
         image,

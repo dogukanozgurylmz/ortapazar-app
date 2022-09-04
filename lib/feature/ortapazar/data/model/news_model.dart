@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class NewsModel extends Equatable {
   final String id;
+  final String currentUser;
   final String title;
   final String content;
   final String image;
@@ -10,6 +11,7 @@ class NewsModel extends Equatable {
 
   const NewsModel({
     required this.id,
+    required this.currentUser,
     required this.title,
     required this.content,
     required this.image,
@@ -20,6 +22,7 @@ class NewsModel extends Equatable {
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'id': id,
+      'current_user': currentUser,
       'title': title,
       'content': content,
       'image': image,
@@ -31,6 +34,8 @@ class NewsModel extends Equatable {
   factory NewsModel.fromJson(Map<String, dynamic> json) {
     return NewsModel(
       id: json['id']! as String,
+      currentUser:
+          json['current_user'] != null ? json['current_user'] as String : '',
       title: json['title']! as String,
       content: json['content']! as String,
       image: json['image']! as String,
@@ -40,5 +45,13 @@ class NewsModel extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, title, content, image, addedDate, isSaved];
+  List<Object?> get props => [
+        id,
+        currentUser,
+        title,
+        content,
+        image,
+        addedDate,
+        isSaved,
+      ];
 }

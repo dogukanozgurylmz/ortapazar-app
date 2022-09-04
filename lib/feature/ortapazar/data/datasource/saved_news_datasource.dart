@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ortapazar/feature/ortapazar/data/datasource/firebase_data_manager.dart';
 
 import '../model/saved_news_model.dart';
+import 'ortapazar_database.dart';
 
 abstract class SavedNewsDataSource {
   Future<List<SavedNewsModel>> getSavedNewsList(
@@ -44,6 +45,7 @@ class SavedNewsDataSourceImpl extends FirebaseDataManager
         element['id'],
         () => SavedNewsModel(
           id: element['id'],
+          userId: element['user_id'],
           newsId: element['news_id'],
         ),
       );

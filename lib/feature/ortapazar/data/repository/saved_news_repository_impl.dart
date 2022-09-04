@@ -28,6 +28,7 @@ class SavedNewsRepositoryImpl implements SavedNewsRepository {
       final newsList = result
           .map((e) => SavedNewsEntity(
                 id: e.id,
+                userId: e.userId,
                 newsId: e.newsId,
               ))
           .toList();

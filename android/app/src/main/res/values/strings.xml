@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ortapazar app</string>
+
+    <string name="facebook_app_id">404355128497859</string>
+
+    <string name="fb_login_protocol_scheme">aa054a2b5af0f4e82cf81be18dfda9de</string>
+</resources>

@@ -25,6 +25,7 @@ class NewsRepositoryImpl implements NewsRepository {
       final newsList = result
           .map((e) => NewsEntity(
                 id: e.id,
+                currentUser: e.currentUser,
                 title: e.title,
                 content: e.content,
                 image: e.image,

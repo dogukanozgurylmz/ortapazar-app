@@ -1,11 +1,12 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:image_picker/image_picker.dart';
 import 'package:ortapazar/core/constants/app_constant.dart';
@@ -46,6 +47,7 @@ class CreateNewsCubit extends Cubit<CreateNewsState> {
     await addImageToFirebase(newDocId);
     NewsEntity newsEntity = NewsEntity(
       id: newDocId,
+      currentUser: FirebaseAuth.instance.currentUser?.displayName ?? '',
       title: newsTitleController.text,
       content: newsContentController.text,
       image: fullPath,

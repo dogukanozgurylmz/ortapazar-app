@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ortapazar/feature/ortapazar/presentation/create_news/create_news_view.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-
-import '../../../../core/constants/text_style_constant.dart';
-import '../home/home_view.dart';
+import 'package:ortapazar/feature/ortapazar/presentation/home/home_view.dart';
+import 'package:ortapazar/feature/ortapazar/presentation/profile/profile_view.dart';
 
 class BaseView extends StatefulWidget {
   const BaseView({Key? key}) : super(key: key);
@@ -14,79 +11,60 @@ class BaseView extends StatefulWidget {
 }
 
 class _BaseViewState extends State<BaseView> {
-  final PersistentTabController controller =
-      PersistentTabController(initialIndex: 0);
-  String navbarTitle = "Ortapazar";
+  int _selectedIndex = 0;
+  static const List<Widget> _widgetOptions = <Widget>[
+    HomeView(),
+    CreateNewsView(),
+    ProfileView(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return PersistentTabView(
-      context,
-      controller: controller,
-      screens: screens(),
-      items: _navBarItems(),
-      confineInSafeArea: true,
-      backgroundColor: const Color(0xff1C6D00),
-      resizeToAvoidBottomInset: true,
-      hideNavigationBarWhenKeyboardShows: true,
-      popAllScreensOnTapOfSelectedTab: true,
-      popActionScreens: PopActionScreensType.all,
-      itemAnimationProperties: const ItemAnimationProperties(
-        duration: Duration(milliseconds: 300),
-        curve: Curves.ease,
+    return Scaffold(
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      navBarStyle: NavBarStyle.style1,
+      bottomNavigationBar: BottomNavigationBar(
+        elevation: 0,
+        backgroundColor: const Color(0xff1C6D00),
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.add_circle_outline,
+              size: 35,
+            ),
+            activeIcon: Icon(
+              Icons.add_circle_outlined,
+              size: 40,
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: '',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.white,
+        selectedIconTheme: const IconThemeData(
+          size: 35,
+        ),
+        showSelectedLabels: false,
+        unselectedFontSize: 0,
+        selectedFontSize: 0,
+        unselectedItemColor: Colors.white,
+        onTap: _onItemTapped,
+      ),
     );
   }
-
-  List<Widget> screens() {
-    return [
-      const HomeView(),
-      const CreateNewsView(),
-      const Center(child: Text("YOHTİR")),
-    ];
-  }
-
-  List<PersistentBottomNavBarItem> _navBarItems() {
-    return [
-      PersistentBottomNavBarItem(
-        icon: const Icon(Icons.home_rounded),
-        title: ("Ana Sayfa"),
-        activeColorPrimary: Colors.white,
-        inactiveColorPrimary: Colors.white,
-      ),
-      PersistentBottomNavBarItem(
-        icon: const Icon(Icons.add_rounded),
-        title: ("Haber Ekle"),
-        activeColorPrimary: Colors.white,
-        inactiveColorPrimary: Colors.white,
-      ),
-      PersistentBottomNavBarItem(
-        icon: const Icon(Icons.person),
-        title: ("Profil"),
-        activeColorPrimary: Colors.white,
-        inactiveColorPrimary: Colors.white,
-      ),
-    ];
-  }
-
-  AppBar _buildAppBar(BuildContext context) {
-    return AppBar(
-      title: Text(
-        navbarTitle,
-        style: TextStyleConstant.APP_BAR_STYLE,
-      ),
-      toolbarHeight: 45,
-      backgroundColor: const Color(0xff1C6D00),
-      elevation: 0,
-    );
-  }
-
-  // AppBar _buildAppBar(BuildContext context) {
-  //   return AppBar(
-  //     toolbarHeight: 0,
-  //     backgroundColor: const Color(0xff1C6D00),
-  //     elevation: 0,
-  //   );
-  // }
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class TextStyleConstant {
   static TextStyle get APP_BAR_STYLE => const TextStyle(
         fontWeight: FontWeight.bold,
-        fontSize: 25,
+        fontSize: 32,
       );
   static TextStyle get HOME_TITLES => const TextStyle(
         fontWeight: FontWeight.bold,
@@ -34,6 +34,12 @@ class TextStyleConstant {
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: Colors.white,
+      );
+
+  static TextStyle get CURRENT_USER => TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.bold,
+        color: Colors.grey.shade400,
       );
 
   static TextStyle get NEWS_CONTENT => const TextStyle(

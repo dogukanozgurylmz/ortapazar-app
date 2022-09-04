@@ -1,9 +1,8 @@
-import 'dart:collection';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ortapazar/feature/ortapazar/data/model/news_model.dart';
 
 import 'firebase_data_manager.dart';
+import 'ortapazar_database.dart';
 
 abstract class NewsDataSource {
   Future<List<NewsModel>> getNewsList(
