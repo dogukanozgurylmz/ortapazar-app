@@ -6,10 +6,11 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:image_picker/image_picker.dart';
 import 'package:ortapazar/core/constants/app_constant.dart';
+import 'package:ortapazar/feature/ortapazar/data/datasource/ortapazar_database.dart';
 import 'package:ortapazar/feature/ortapazar/domain/entities/news_entity.dart';
 import 'package:ortapazar/feature/ortapazar/domain/usecases/news/create_news.dart';
 
@@ -47,12 +48,13 @@ class CreateNewsCubit extends Cubit<CreateNewsState> {
     await addImageToFirebase(newDocId);
     NewsEntity newsEntity = NewsEntity(
       id: newDocId,
-      currentUser: FirebaseAuth.instance.currentUser?.displayName ?? '',
+      userId: FirebaseAuth.instance.currentUser!.uid,
       title: newsTitleController.text,
       content: newsContentController.text,
       image: fullPath,
       addedDate: _newsAddedDate,
-      isSaved: false,
+      isConfirm: false,
+      createdAt: Timestamp.now(),
     );
     final result = await _createNews.call(CreateNewsParams(
       collectionId: AppConstant.NEWS_COLLECTIN_ID,

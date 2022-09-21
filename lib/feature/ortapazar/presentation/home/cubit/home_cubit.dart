@@ -1,47 +1,50 @@
 import 'dart:developer';
-import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:ortapazar/core/constants/app_constant.dart';
 import 'package:ortapazar/feature/ortapazar/data/datasource/ortapazar_auth.dart';
 import 'package:ortapazar/feature/ortapazar/domain/entities/news_entity.dart';
 import 'package:ortapazar/feature/ortapazar/domain/usecases/news/get_news_list.dart';
+import 'package:ortapazar/feature/ortapazar/domain/usecases/news/get_news_by_createdat.dart';
 import 'package:ortapazar/feature/ortapazar/domain/usecases/saved_news/create_saved_news.dart';
 import 'package:ortapazar/feature/ortapazar/domain/usecases/saved_news/delete_saved_news.dart';
 import 'package:ortapazar/feature/ortapazar/domain/usecases/saved_news/get_saved_news_list.dart';
+import 'package:ortapazar/feature/ortapazar/domain/usecases/user/get_users.dart';
 
 import '../../../domain/entities/saved_news_entity.dart';
+import '../../../domain/entities/user_entity.dart';
 
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  List<NewsEntity> _newsList = [];
+  final List<NewsEntity> _newsList = [];
   List<SavedNewsEntity> _savedNewsList = [];
-  final GetNewsListUseCase _getNewsList;
   final GetSavedNewsListUseCase _getSavedNewsList;
   final CreateSavedNewsUseCase _createSavedNews;
   final DeleteSavedNewsUseCase _deleteSavedNews;
+  final GetUsersUseCase _getUsers;
+  final GetNewsByCreatedAtUseCase _getNewsOrderByCreatedAt;
   String url = "";
 
   HomeCubit({
-    required GetNewsListUseCase getNewsList,
     required GetSavedNewsListUseCase getSavedNewsList,
     required CreateSavedNewsUseCase createSavedNews,
     required DeleteSavedNewsUseCase deleteSavedNews,
-  })  : _getNewsList = getNewsList,
-        _getSavedNewsList = getSavedNewsList,
+    required GetUsersUseCase getUsers,
+    required GetNewsByCreatedAtUseCase getNewsOrderByCreatedAt,
+  })  : _getSavedNewsList = getSavedNewsList,
         _createSavedNews = createSavedNews,
         _deleteSavedNews = deleteSavedNews,
+        _getUsers = getUsers,
+        _getNewsOrderByCreatedAt = getNewsOrderByCreatedAt,
         super(
           const HomeState(
             news: [],
             savedNews: [],
+            users: [],
             isLoading: false,
             isSavedNews: false,
             message: '',
@@ -51,7 +54,8 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> init() async {
-    await getNews();
+    await getUsers();
+    await getNewsOrderByCreatedAt();
     await getSavedNews();
   }
 
@@ -62,14 +66,14 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(isLoading: false));
   }
 
-  Future<void> getNews() async {
+  Future<void> getNewsOrderByCreatedAt() async {
     emit(state.copyWith(isLoading: true));
     try {
       final List<NewsEntity> newsList = [];
-      final result = await _getNewsList.call(
-        GetNewsListParams(
+      final result = await _getNewsOrderByCreatedAt.call(
+        GetNewsByCreatedAtParams(
           collectionId: AppConstant.NEWS_COLLECTIN_ID,
-          limit: 100,
+          query: "true",
         ),
       );
       final either = result.fold((l) => l, (r) => r);
@@ -105,16 +109,21 @@ class HomeCubit extends Cubit<HomeState> {
               .ref(data['image'])
               .getDownloadURL();
           NewsEntity entity = NewsEntity(
-              id: newsEntity.id,
-              currentUser: newsEntity.currentUser,
-              title: newsEntity.title,
-              content: newsEntity.content,
-              image: url,
-              addedDate: newsEntity.addedDate,
-              isSaved: newsEntity.isSaved);
+            id: newsEntity.id,
+            userId: newsEntity.userId,
+            title: newsEntity.title,
+            content: newsEntity.content,
+            image: url,
+            addedDate: newsEntity.addedDate,
+            isConfirm: newsEntity.isConfirm,
+            createdAt: newsEntity.createdAt,
+          );
           _newsList.add(entity);
         }
       }
+      _newsList.sort(
+        (a, b) => b.createdAt.compareTo(a.createdAt),
+      );
       emit(state.copyWith(
         news: _newsList,
       ));
@@ -181,5 +190,24 @@ class HomeCubit extends Cubit<HomeState> {
         return;
       }
     }
+  }
+
+  Future<void> getUsers() async {
+    List<UserEntity> users = [];
+    final result = await _getUsers.call(GetUsersParams(
+      collectionId: AppConstant.USER_COLLECTION_ID,
+      limit: 100,
+    ));
+
+    final either = result.fold((l) => l, (r) => r);
+    if (either is List<UserEntity>) {
+      users.addAll(either);
+      emit(state.copyWith(users: users));
+    }
+  }
+
+  String userControl(String userId) {
+    var firstWhere = state.users.firstWhere((e) => e.id == userId);
+    return firstWhere.displayName;
   }
 }

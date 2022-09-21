@@ -9,13 +9,17 @@ import 'package:ortapazar/feature/ortapazar/data/repository/news_repository_impl
 import 'package:ortapazar/feature/ortapazar/data/repository/user_repository_impl.dart';
 import 'package:ortapazar/feature/ortapazar/domain/repositories/news_repository.dart';
 import 'package:ortapazar/feature/ortapazar/domain/usecases/news/create_news.dart';
+import 'package:ortapazar/feature/ortapazar/domain/usecases/news/get_news_by_uid.dart';
 import 'package:ortapazar/feature/ortapazar/domain/usecases/news/get_news_list.dart';
+import 'package:ortapazar/feature/ortapazar/domain/usecases/news/get_news_by_createdat.dart';
 import 'package:ortapazar/feature/ortapazar/domain/usecases/user/create_user.dart';
 import 'package:ortapazar/feature/ortapazar/domain/usecases/user/get_users.dart';
 import 'package:ortapazar/feature/ortapazar/domain/usecases/user/update_user.dart';
+import 'package:ortapazar/feature/ortapazar/presentation/admin_panel/news_confirm/cubit/news_confirm_cubit.dart';
 import 'package:ortapazar/feature/ortapazar/presentation/create_news/cubit/create_news_cubit.dart';
 import 'package:ortapazar/feature/ortapazar/presentation/favorite/cubit/favorite_cubit.dart';
 import 'package:ortapazar/feature/ortapazar/presentation/home/cubit/home_cubit.dart';
+import 'package:ortapazar/feature/ortapazar/presentation/my_news/cubit/my_news_cubit.dart';
 import 'package:ortapazar/feature/ortapazar/presentation/profile/cubit/profile_cubit.dart';
 import 'package:ortapazar/feature/ortapazar/presentation/signin/cubit/signin_cubit.dart';
 import 'package:ortapazar/feature/ortapazar/presentation/splash/cubit/splash_cubit.dart';
@@ -36,26 +40,40 @@ import 'firebase_options.dart';
 GetIt getIt = GetIt.instance;
 void main() async {
   getIt.registerFactory(() => HomeCubit(
-        getNewsList: getIt(),
         createSavedNews: getIt(),
         getSavedNewsList: getIt(),
         deleteSavedNews: getIt(),
+        getUsers: getIt(),
+        getNewsOrderByCreatedAt: getIt(),
       ));
   getIt.registerFactory(() => FavoriteCubit(
         getNewsList: getIt(),
         getSavedNewsList: getIt(),
         deleteSavedNews: getIt(),
+        getNewsByCreatedAt: getIt(),
+      ));
+  getIt.registerFactory(() => MyNewsCubit(
+        getNewsById: getIt(),
       ));
   getIt.registerFactory(() => SplashCubit());
   getIt.registerFactory(() => SignInCubit(createUser: getIt()));
   getIt.registerFactory(() => ProfileCubit(
         getUser: getIt(),
       ));
+  getIt.registerFactory(() => NewsConfirmCubit(
+        getNewsList: getIt(),
+        getUsers: getIt(),
+        updateNews: getIt(),
+      ));
 
   getIt.registerFactory(() => CreateNewsCubit(getIt()));
 
   getIt
       .registerLazySingleton(() => GetNewsListUseCase(newsRepository: getIt()));
+  getIt.registerLazySingleton(
+      () => GetNewsByCreatedAtUseCase(newsRepository: getIt()));
+  getIt.registerLazySingleton(
+      () => GetNewsByUIdUseCase(newsRepository: getIt()));
   getIt.registerLazySingleton(() => CreateNewsUseCase(newsRepository: getIt()));
   getIt.registerLazySingleton(() => UpdateNewsUseCase(newsRepository: getIt()));
 
@@ -88,9 +106,7 @@ void main() async {
 
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+
   runApp(const OrtapazarApp());
 }
 
@@ -103,7 +119,7 @@ class OrtapazarApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       color: Colors.white,
-      title: 'Flutter Demo',
+      title: 'Ortapazar',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'RobotoCondensed',

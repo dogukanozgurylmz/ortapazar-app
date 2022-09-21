@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ortapazar/feature/ortapazar/presentation/create_news/cubit/create_news_cubit.dart';
-import 'package:ortapazar/widgets/form_textfield_widget.dart';
 import 'package:ortapazar/widgets/form_title_widget.dart';
 
 import '../../../../core/constants/text_style_constant.dart';
@@ -27,35 +24,96 @@ class CreateNewsView extends StatelessWidget {
                 children: [
                   const SizedBox(height: 15),
                   state.file.path.isNotEmpty
-                      ? Image.file(
-                          state.file,
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          height: MediaQuery.of(context).size.height * 0.5,
-                          fit: BoxFit.cover,
+                      ? ClipRRect(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(15)),
+                          child: Image.file(
+                            state.file,
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            height: MediaQuery.of(context).size.height * 0.5,
+                            fit: BoxFit.cover,
+                          ),
                         )
                       : const SizedBox.shrink(),
+                  const SizedBox(height: 15),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      MaterialButton(
-                        onPressed: () => cubit.getImage(ImageSource.camera),
-                        child: const Text("Fotoğraf çek"),
+                      InkWell(
+                        onTap: () {
+                          cubit.getImage(ImageSource.camera);
+                        },
+                        child: Container(
+                          height: 40,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 1,
+                              color: const Color(0xffD9D9D9),
+                            ),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Center(
+                              child: Text(
+                                "Fotoğraf çek",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                      MaterialButton(
-                        onPressed: () => cubit.getImage(ImageSource.gallery),
-                        child: const Text("Galeriden ekle"),
+                      InkWell(
+                        onTap: () {
+                          cubit.getImage(ImageSource.gallery);
+                        },
+                        child: Container(
+                          height: 40,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 1,
+                              color: const Color(0xffD9D9D9),
+                            ),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Center(
+                              child: Text(
+                                "Galeriden ekle",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
+                  const SizedBox(height: 20),
                   Form(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Column(
                         children: [
                           const FormTitleWidget(title: "Haberin Başlığı"),
-                          FormTextFieldWidget(
-                            hintText: "Haberin Başlığı",
+                          TextFormField(
                             controller: cubit.newsTitleController,
+                            keyboardType: TextInputType.multiline,
+                            textInputAction: TextInputAction.newline,
+                            minLines: 1,
+                            maxLines: 15,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                borderSide: const BorderSide(
+                                  width: 0.2,
+                                  color: Color(0xffD9D9D9),
+                                ),
+                              ),
+                              hintText: "Haberin Başlığı",
+                            ),
                           ),
                           const SizedBox(
                             height: 20,
@@ -70,6 +128,10 @@ class CreateNewsView extends StatelessWidget {
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20),
+                                borderSide: const BorderSide(
+                                  width: 0.2,
+                                  color: Color(0xffD9D9D9),
+                                ),
                               ),
                               hintText: "Haberin İçeriği",
                             ),
@@ -78,9 +140,31 @@ class CreateNewsView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: () => cubit.addNews(),
-                    child: const Text("ekle"),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      await cubit.addNews();
+                    },
+                    child: Container(
+                      width: 100,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 1,
+                          color: const Color(0xffD9D9D9),
+                        ),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          "Ekle",
+                          style: TextStyle(fontSize: 22),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

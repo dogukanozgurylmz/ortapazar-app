@@ -19,6 +19,7 @@ class FormTextFieldWidget extends StatelessWidget {
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
+          borderSide: const BorderSide(width: 0.5, color: Color(0xffD9D9D9)),
         ),
         hintText: hintText,
       ),

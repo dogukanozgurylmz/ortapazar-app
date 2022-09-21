@@ -7,6 +7,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/constants/text_style_constant.dart';
 import '../../../../main.dart';
+import '../../data/datasource/ortapazar_auth.dart';
 
 class FavoriteView extends StatelessWidget {
   const FavoriteView({Key? key}) : super(key: key);
@@ -129,7 +130,13 @@ class FavoriteView extends StatelessWidget {
                               child: Row(
                                 children: [
                                   Text(
-                                    state.news[index].currentUser,
+                                    OrtapazarAuth()
+                                                .firebaseAuth
+                                                .currentUser!
+                                                .uid ==
+                                            state.news[index].userId
+                                        ? state.news[index].userId
+                                        : "Not Found",
                                     style: TextStyleConstant.CURRENT_USER,
                                   ),
                                 ],

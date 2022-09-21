@@ -125,9 +125,12 @@ class HomeView extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(
-              state.news[index].image,
-            ),
+            image: state.news[index].image.isNotEmpty
+                ? NetworkImage(
+                    state.news[index].image,
+                  )
+                : const AssetImage("assets/images/ortapazar_icon.png")
+                    as ImageProvider,
             fit: BoxFit.cover,
           ),
         ),
@@ -149,21 +152,20 @@ class HomeView extends StatelessWidget {
                         children: [
                           SizedBox(
                             height: 20,
+                            width: 250,
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                 children: [
                                   Text(
-                                    state.news[index].currentUser,
+                                    cubit.userControl(state.news[index].userId),
                                     style: TextStyleConstant.CURRENT_USER,
                                   ),
                                 ],
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            width: 8,
-                          ),
+                          const SizedBox(width: 8),
                         ],
                       ),
                     ),

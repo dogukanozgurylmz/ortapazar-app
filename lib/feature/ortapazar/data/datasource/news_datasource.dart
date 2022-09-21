@@ -5,20 +5,13 @@ import 'firebase_data_manager.dart';
 import 'ortapazar_database.dart';
 
 abstract class NewsDataSource {
-  Future<List<NewsModel>> getNewsList(
-    String collectionId,
-    int? limit,
-  );
+  Future<List<NewsModel>> getNewsList(String collectionId, int? limit);
+  Future<List<NewsModel>> getNewsByUId(String collectionId, String query);
+  Future<List<NewsModel>> getNewsByCreatedAt(String collectionId, String query);
   Future<String?> createNews(
-    String collectionId,
-    String documentId,
-    Map<String, dynamic> data,
-  );
+      String collectionId, String documentId, Map<String, dynamic> data);
   Future<String?> updateNews(
-    String collectionId,
-    String documentId,
-    Map<String, dynamic> data,
-  );
+      String collectionId, String documentId, Map<String, dynamic> data);
 }
 
 class NewsDataSourceImpl extends FirebaseDataManager implements NewsDataSource {
@@ -33,7 +26,46 @@ class NewsDataSourceImpl extends FirebaseDataManager implements NewsDataSource {
         querySnapshot.docs.map((e) => NewsModel.fromJson(e.data())).toList();
 
     if (list.isEmpty) {
-      throw Exception('No days found');
+      throw Exception('No news found');
+    }
+    return list;
+  }
+
+  @override
+  Future<List<NewsModel>> getNewsByUId(
+    String collectionId,
+    String query,
+  ) async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await firestore
+        .collection(collectionId)
+        .where('user_id', isEqualTo: query)
+        .get();
+    var list =
+        querySnapshot.docs.map((e) => NewsModel.fromJson(e.data())).toList();
+
+    if (list.isEmpty) {
+      throw Exception('No news found');
+    }
+    return list;
+  }
+
+  @override
+  Future<List<NewsModel>> getNewsByCreatedAt(
+    String collectionId,
+    String query,
+  ) async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await firestore
+        .collection(collectionId)
+        // .orderBy('created_at')
+        // .orderBy(FieldPath.documentId)
+        .where('is_confirm', isEqualTo: true)
+        // .limitToLast(100)
+        .get();
+    var list =
+        querySnapshot.docs.map((e) => NewsModel.fromJson(e.data())).toList();
+
+    if (list.isEmpty) {
+      throw Exception('No news found');
     }
     return list;
   }

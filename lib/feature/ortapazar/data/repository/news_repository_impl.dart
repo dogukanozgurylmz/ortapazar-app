@@ -7,6 +7,8 @@ import '../../domain/repositories/news_repository.dart';
 import '../datasource/news_datasource.dart';
 
 typedef _GetNewsList = Future<List<NewsEntity>> Function();
+typedef _GetNewsById = Future<List<NewsEntity>> Function();
+typedef _GetNewsByCreatedAt = Future<List<NewsEntity>> Function();
 typedef _CreateNews = Future<String?> Function();
 typedef _UpdateNews = Future<String?> Function();
 
@@ -25,12 +27,61 @@ class NewsRepositoryImpl implements NewsRepository {
       final newsList = result
           .map((e) => NewsEntity(
                 id: e.id,
-                currentUser: e.currentUser,
+                userId: e.userId,
                 title: e.title,
                 content: e.content,
                 image: e.image,
                 addedDate: e.addedDate,
-                isSaved: e.isSaved,
+                isConfirm: e.isConfirm,
+                createdAt: e.createdAt,
+              ))
+          .toList();
+      return newsList;
+    });
+  }
+
+  @override
+  Future<Either<Failure, List<NewsEntity>>> getNewsByUId(
+    String collectionId,
+    String query,
+  ) {
+    return _getNewsByUId(() async {
+      final List<NewsModel> result =
+          await _newsDatasource.getNewsByUId(collectionId, query);
+      final newsList = result
+          .map((e) => NewsEntity(
+                id: e.id,
+                userId: e.userId,
+                title: e.title,
+                content: e.content,
+                image: e.image,
+                addedDate: e.addedDate,
+                isConfirm: e.isConfirm,
+                createdAt: e.createdAt,
+              ))
+          .toList();
+      return newsList;
+    });
+  }
+
+  @override
+  Future<Either<Failure, List<NewsEntity>>> getNewsByCreatedAt(
+    String collectionId,
+    String query,
+  ) {
+    return _getNewsByCreatedAt(() async {
+      final List<NewsModel> result =
+          await _newsDatasource.getNewsByCreatedAt(collectionId, query);
+      final newsList = result
+          .map((e) => NewsEntity(
+                id: e.id,
+                userId: e.userId,
+                title: e.title,
+                content: e.content,
+                image: e.image,
+                addedDate: e.addedDate,
+                isConfirm: e.isConfirm,
+                createdAt: e.createdAt,
               ))
           .toList();
       return newsList;
@@ -78,6 +129,28 @@ class NewsRepositoryImpl implements NewsRepository {
   ) async {
     try {
       final result = await getNewsList();
+      return Right(result);
+    } on Exception {
+      return Left(ServerFailure());
+    }
+  }
+
+  Future<Either<Failure, List<NewsEntity>>> _getNewsByUId(
+    _GetNewsById getNewsById,
+  ) async {
+    try {
+      final result = await getNewsById();
+      return Right(result);
+    } on Exception {
+      return Left(ServerFailure());
+    }
+  }
+
+  Future<Either<Failure, List<NewsEntity>>> _getNewsByCreatedAt(
+    _GetNewsByCreatedAt getNewsByCreatedAt,
+  ) async {
+    try {
+      final result = await getNewsByCreatedAt();
       return Right(result);
     } on Exception {
       return Left(ServerFailure());

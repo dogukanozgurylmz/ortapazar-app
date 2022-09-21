@@ -35,6 +35,11 @@ class TextStyleConstant {
         fontWeight: FontWeight.bold,
         color: Colors.white,
       );
+  static TextStyle get MY_NEWS_TITLE => const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: Colors.black87,
+      );
 
   static TextStyle get CURRENT_USER => TextStyle(
         fontSize: 15,
@@ -45,5 +50,9 @@ class TextStyleConstant {
   static TextStyle get NEWS_CONTENT => const TextStyle(
         fontSize: 18,
         color: Colors.white,
+      );
+  static TextStyle get MY_NEWS_CONTENT => const TextStyle(
+        fontSize: 16,
+        color: Colors.black,
       );
 }

@@ -1,6 +1,5 @@
 import 'package:ortapazar/core/errors/failures.dart';
 import 'package:dartz/dartz.dart';
-import 'package:ortapazar/feature/ortapazar/domain/entities/news_entity.dart';
 import 'package:ortapazar/feature/ortapazar/domain/entities/user_entity.dart';
 
 import '../../../../../core/usecase/usecase.dart';

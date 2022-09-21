@@ -18,30 +18,12 @@ class SplashView extends StatefulWidget {
 class _SplashViewState extends State<SplashView>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation _animation;
-  // late Timer _timer;
-  // FlutterLogoStyle _logoStyle = FlutterLogoStyle.markOnly;
-  // void fadeIn() {
-  //   _timer = Timer(const Duration(seconds: 1), () {
-  //     setState(() {
-  //       _logoStyle = FlutterLogoStyle.horizontal;
-  //     });
-  //   });
-  // }
-
-  // void fadeOut() {
-  //   _timer = Timer(const Duration(seconds: 1), () {
-  //     setState(() {
-  //       _logoStyle = FlutterLogoStyle.horizontal;
-  //     });
-  //   });
-  // }
 
   @override
   void initState() {
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(microseconds: 1500),
     );
     super.initState();
   }
@@ -62,19 +44,22 @@ class _SplashViewState extends State<SplashView>
           return state.isFirebaseInitialize
               ? const SignInView()
               : Scaffold(
+                  backgroundColor: Colors.white,
                   body: Center(
                     child: Hero(
                       tag: "heroLogo",
                       child: FadeTransition(
-                          opacity: _controller,
-                          child: Text(
-                            "ORTAPAZAR",
-                            style: TextStyle(
-                              fontSize: 40,
-                              color: Colors.grey[850],
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )),
+                        opacity: _controller,
+                        child: Image.asset("assets/images/ortapazar_icon.png"),
+                        // Text(
+                        //   "ORTAPAZAR",
+                        //   style: TextStyle(
+                        //     fontSize: 40,
+                        //     color: Colors.grey[850],
+                        //     fontWeight: FontWeight.bold,
+                        //   ),
+                        // ),
+                      ),
                     ),
                   ),
                 );

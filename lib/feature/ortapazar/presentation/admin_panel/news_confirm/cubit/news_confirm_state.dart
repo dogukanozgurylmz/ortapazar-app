@@ -1,36 +1,32 @@
-part of 'home_cubit.dart';
+part of 'news_confirm_cubit.dart';
 
-class HomeState extends Equatable {
+class NewsConfirmState extends Equatable {
   final List<NewsEntity> news;
-  final List<SavedNewsEntity> savedNews;
   final List<UserEntity> users;
   final bool isLoading;
-  final bool isSavedNews;
+  final bool isConfirm;
   final String message;
 
-  const HomeState({
+  const NewsConfirmState({
     required this.news,
-    required this.savedNews,
     required this.users,
     required this.isLoading,
-    required this.isSavedNews,
+    required this.isConfirm,
     required this.message,
   });
 
-  HomeState copyWith({
+  NewsConfirmState copyWith({
     List<NewsEntity>? news,
-    List<SavedNewsEntity>? savedNews,
     List<UserEntity>? users,
     bool? isLoading,
-    bool? isSavedNews,
+    bool? isConfirm,
     String? message,
   }) {
-    return HomeState(
+    return NewsConfirmState(
       news: news ?? this.news,
-      savedNews: savedNews ?? this.savedNews,
       users: users ?? this.users,
       isLoading: isLoading ?? this.isLoading,
-      isSavedNews: isSavedNews ?? this.isSavedNews,
+      isConfirm: isConfirm ?? this.isConfirm,
       message: message ?? this.message,
     );
   }
@@ -38,10 +34,9 @@ class HomeState extends Equatable {
   @override
   List<Object> get props => [
         news,
-        savedNews,
         users,
         isLoading,
-        isSavedNews,
+        isConfirm,
         message,
       ];
 }

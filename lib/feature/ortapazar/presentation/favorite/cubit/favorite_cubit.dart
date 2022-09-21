@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:ortapazar/feature/ortapazar/data/datasource/ortapazar_auth.dart';
 import 'package:ortapazar/feature/ortapazar/data/datasource/ortapazar_database.dart';
+import 'package:ortapazar/feature/ortapazar/domain/usecases/news/get_news_by_createdat.dart';
 
 import '../../../../../core/constants/app_constant.dart';
 import '../../../domain/entities/news_entity.dart';
@@ -16,9 +17,10 @@ import '../../../domain/usecases/saved_news/get_saved_news_list.dart';
 part 'favorite_state.dart';
 
 class FavoriteCubit extends Cubit<FavoriteState> {
-  List<NewsEntity> _newsList = [];
+  final List<NewsEntity> _newsList = [];
   List<SavedNewsEntity> _savedNewsList = [];
   final GetNewsListUseCase _getNewsList;
+  final GetNewsByCreatedAtUseCase _getNewsByCreatedAt;
   final GetSavedNewsListUseCase _getSavedNewsList;
   final DeleteSavedNewsUseCase _deleteSavedNews;
   String url = "";
@@ -27,9 +29,11 @@ class FavoriteCubit extends Cubit<FavoriteState> {
     required GetNewsListUseCase getNewsList,
     required GetSavedNewsListUseCase getSavedNewsList,
     required DeleteSavedNewsUseCase deleteSavedNews,
+    required GetNewsByCreatedAtUseCase getNewsByCreatedAt,
   })  : _getNewsList = getNewsList,
         _getSavedNewsList = getSavedNewsList,
         _deleteSavedNews = deleteSavedNews,
+        _getNewsByCreatedAt = getNewsByCreatedAt,
         super(
           const FavoriteState(
             news: [],
@@ -78,10 +82,10 @@ class FavoriteCubit extends Cubit<FavoriteState> {
     emit(state.copyWith(isLoading: true));
     try {
       final List<NewsEntity> newsList = [];
-      final result = await _getNewsList.call(
-        GetNewsListParams(
+      final result = await _getNewsByCreatedAt.call(
+        GetNewsByCreatedAtParams(
           collectionId: AppConstant.NEWS_COLLECTIN_ID,
-          limit: 100,
+          query: "true",
         ),
       );
       final either = result.fold((l) => l, (r) => r);
@@ -118,19 +122,24 @@ class FavoriteCubit extends Cubit<FavoriteState> {
               .ref(data['image'])
               .getDownloadURL();
           NewsEntity entity = NewsEntity(
-              id: newsEntity.id,
-              currentUser: newsEntity.currentUser,
-              title: newsEntity.title,
-              content: newsEntity.content,
-              image: url,
-              addedDate: newsEntity.addedDate,
-              isSaved: newsEntity.isSaved);
+            id: newsEntity.id,
+            userId: newsEntity.userId,
+            title: newsEntity.title,
+            content: newsEntity.content,
+            image: url,
+            addedDate: newsEntity.addedDate,
+            isConfirm: newsEntity.isConfirm,
+            createdAt: newsEntity.createdAt,
+          );
           _newsList.add(entity);
         }
       }
     } on Exception {
       log("Hataaa");
     }
+    _newsList.sort(
+      (a, b) => b.createdAt.compareTo(a.createdAt),
+    );
     emit(state.copyWith(
       news: _newsList,
     ));
