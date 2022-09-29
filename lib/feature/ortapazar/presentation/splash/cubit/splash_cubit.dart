@@ -22,9 +22,9 @@ class SplashCubit extends Cubit<SplashState> {
 
   Future<void> initializeFirebase() async {
     emit(state.copyWith(isFirebaseInitialize: false));
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    // await Firebase.initializeApp(
+    //   options: DefaultFirebaseOptions.currentPlatform,
+    // );
     await Firebase.initializeApp();
     await Future.delayed(const Duration(milliseconds: 1500));
     emit(state.copyWith(isFirebaseInitialize: true));

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ortapazar/feature/ortapazar/data/datasource/news_datasource.dart';
 import 'package:ortapazar/feature/ortapazar/data/datasource/user_datasource.dart';
 import 'package:ortapazar/feature/ortapazar/data/repository/news_repository_impl.dart';
@@ -35,7 +36,6 @@ import 'feature/ortapazar/domain/usecases/saved_news/delete_saved_news.dart';
 import 'feature/ortapazar/domain/usecases/saved_news/get_saved_news_list.dart';
 import 'feature/ortapazar/domain/usecases/saved_news/update_saved_news.dart';
 import 'feature/ortapazar/domain/usecases/user/get_user.dart';
-import 'firebase_options.dart';
 
 GetIt getIt = GetIt.instance;
 void main() async {
@@ -106,6 +106,8 @@ void main() async {
 
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
+
+  MobileAds.instance.initialize();
 
   runApp(const OrtapazarApp());
 }

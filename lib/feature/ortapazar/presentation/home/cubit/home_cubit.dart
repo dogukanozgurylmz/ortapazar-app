@@ -4,6 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:ortapazar/core/admob/create_ad.dart';
 import 'package:ortapazar/core/constants/app_constant.dart';
 import 'package:ortapazar/feature/ortapazar/data/datasource/ortapazar_auth.dart';
 import 'package:ortapazar/feature/ortapazar/domain/entities/news_entity.dart';
@@ -28,6 +30,7 @@ class HomeCubit extends Cubit<HomeState> {
   final GetUsersUseCase _getUsers;
   final GetNewsByCreatedAtUseCase _getNewsOrderByCreatedAt;
   String url = "";
+  late BannerAd bannerAd;
 
   HomeCubit({
     required GetSavedNewsListUseCase getSavedNewsList,
@@ -47,6 +50,7 @@ class HomeCubit extends Cubit<HomeState> {
             users: [],
             isLoading: false,
             isSavedNews: false,
+            isLoadAd: false,
             message: '',
           ),
         ) {
@@ -57,6 +61,7 @@ class HomeCubit extends Cubit<HomeState> {
     await getUsers();
     await getNewsOrderByCreatedAt();
     await getSavedNews();
+    createBannerAd();
   }
 
   Future<void> refresh() async {
@@ -209,5 +214,25 @@ class HomeCubit extends Cubit<HomeState> {
   String userControl(String userId) {
     var firstWhere = state.users.firstWhere((e) => e.id == userId);
     return firstWhere.displayName;
+  }
+
+  void createBannerAd() {
+    // bannerAd = CreateAd.bannerAd;
+    // bannerAd.load();
+    // print(bannerAd);
+    bannerAd = BannerAd(
+      adUnitId: "ca-app-pub-3940256099942544/6300978111",
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          emit(state.copyWith(isLoadAd: true));
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+      size: AdSize.banner,
+    );
+    bannerAd.load();
   }
 }

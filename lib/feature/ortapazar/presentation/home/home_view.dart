@@ -2,18 +2,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ortapazar/core/widgets/blur_background.dart';
 import 'package:ortapazar/feature/ortapazar/data/datasource/ortapazar_auth.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/constants/text_style_constant.dart';
+import '../../../../core/admob/ad_helper.dart';
 import '../../../../main.dart';
 import 'cubit/home_cubit.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
 
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -43,10 +50,9 @@ class HomeView extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(16),
                                     ),
                                     child: SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.3,
-                                    ),
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.3),
                                   ),
                                 );
                               },
@@ -272,23 +278,16 @@ class HomeView extends StatelessWidget {
                 ),
               ),
             ),
+            state.isLoadAd && index % 2 == 1
+                ? Container(
+                    height: 60,
+                    alignment: Alignment.center,
+                    child: AdWidget(
+                      ad: cubit.bannerAd,
+                    ),
+                  )
+                : const SizedBox.shrink()
           ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _showMyDialog(
-    HomeState state,
-    int index,
-    BuildContext context,
-  ) async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        backgroundColor: Colors.transparent,
-        content: PhotoView(
-          imageProvider: NetworkImage(state.news[index].image),
         ),
       ),
     );

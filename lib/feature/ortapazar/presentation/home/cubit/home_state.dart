@@ -6,6 +6,7 @@ class HomeState extends Equatable {
   final List<UserEntity> users;
   final bool isLoading;
   final bool isSavedNews;
+  final bool isLoadAd;
   final String message;
 
   const HomeState({
@@ -14,6 +15,7 @@ class HomeState extends Equatable {
     required this.users,
     required this.isLoading,
     required this.isSavedNews,
+    required this.isLoadAd,
     required this.message,
   });
 
@@ -23,6 +25,7 @@ class HomeState extends Equatable {
     List<UserEntity>? users,
     bool? isLoading,
     bool? isSavedNews,
+    bool? isLoadAd,
     String? message,
   }) {
     return HomeState(
@@ -31,6 +34,7 @@ class HomeState extends Equatable {
       users: users ?? this.users,
       isLoading: isLoading ?? this.isLoading,
       isSavedNews: isSavedNews ?? this.isSavedNews,
+      isLoadAd: isLoadAd ?? this.isLoadAd,
       message: message ?? this.message,
     );
   }
@@ -42,6 +46,7 @@ class HomeState extends Equatable {
         users,
         isLoading,
         isSavedNews,
+        isLoadAd,
         message,
       ];
 }
