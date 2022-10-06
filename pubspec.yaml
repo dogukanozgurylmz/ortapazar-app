@@ -50,6 +50,8 @@ dependencies:
   flutter_facebook_auth: ^4.4.1+1
   flutter_launcher_icons: ^0.10.0
   google_mobile_ads: ^2.0.1
+  hive_flutter: ^1.1.0
+  hive: ^2.2.3
   # firebase_messaging: ^13.0.3
 
 flutter_icons:

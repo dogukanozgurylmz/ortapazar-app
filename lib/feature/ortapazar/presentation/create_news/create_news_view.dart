@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ortapazar/feature/ortapazar/presentation/create_news/cubit/create_news_cubit.dart';
 import 'package:ortapazar/widgets/form_title_widget.dart';
@@ -143,29 +144,38 @@ class CreateNewsView extends StatelessWidget {
                   const SizedBox(
                     height: 15,
                   ),
-                  InkWell(
-                    onTap: () async {
-                      await cubit.addNews();
-                    },
-                    child: Container(
-                      width: 100,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          width: 1,
-                          color: const Color(0xffD9D9D9),
+                  state.isLoading
+                      ? const CircularProgressIndicator()
+                      : InkWell(
+                          onTap: () async {
+                            await cubit.addNews();
+                          },
+                          child: Container(
+                            width: 100,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 1,
+                                color: const Color(0xffD9D9D9),
+                              ),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                "Ekle",
+                                style: TextStyle(fontSize: 22),
+                              ),
+                            ),
+                          ),
                         ),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10)),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          "Ekle",
-                          style: TextStyle(fontSize: 22),
-                        ),
-                      ),
-                    ),
-                  ),
+                  state.isLoadAd
+                      ? Container(
+                          height: 300,
+                          alignment: Alignment.center,
+                          child: AdWidget(ad: cubit.bannerAd),
+                        )
+                      : const SizedBox.shrink()
                 ],
               ),
             );

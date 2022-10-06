@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:image_picker/image_picker.dart';
@@ -26,6 +27,7 @@ class CreateNewsCubit extends Cubit<CreateNewsState> {
   Reference storageReference = FirebaseStorage.instance.ref();
   File? file;
   String fullPath = "";
+  late BannerAd bannerAd;
 
   CreateNewsCubit(
     CreateNewsUseCase createNews,
@@ -35,14 +37,19 @@ class CreateNewsCubit extends Cubit<CreateNewsState> {
             file: File(""),
             url: '',
             imagePath: '',
+            isLoading: false,
+            isLoadAd: false,
           ),
         ) {
     init();
   }
 
-  void init() {}
+  void init() {
+    createBannerAd();
+  }
 
   Future<void> addNews() async {
+    emit(state.copyWith(isLoading: true));
     var newDocId = FirebaseFirestore.instance.collection('news').doc().id;
 
     await addImageToFirebase(newDocId);
@@ -63,21 +70,16 @@ class CreateNewsCubit extends Cubit<CreateNewsState> {
     ));
     final either = result.fold((l) => l, (r) => r);
     if (either is String) {
-      newsTitleController.clear();
-      newsContentController.clear();
       emit(state.copyWith(file: file));
-    } else {
-      newsTitleController.clear();
-      newsContentController.clear();
-      return;
     }
-  }
 
-  Future<void> getImage(ImageSource source) async {
-    PickedFile? image = await ImagePicker.platform.pickImage(source: source);
-    if (image == null) return;
-    file = File(image.path);
-    emit(state.copyWith(file: file));
+    newsTitleController.clear();
+    newsContentController.clear();
+    emit(state.copyWith(
+      isLoading: false,
+      file: File(''),
+      imagePath: '',
+    ));
   }
 
   Future<void> addImageToFirebase(String newsId) async {
@@ -89,5 +91,29 @@ class CreateNewsCubit extends Cubit<CreateNewsState> {
     emit(state.copyWith(
       imagePath: imagePath,
     ));
+  }
+
+  Future<void> getImage(ImageSource source) async {
+    PickedFile? image = await ImagePicker.platform.pickImage(source: source);
+    if (image == null) return;
+    file = File(image.path);
+    emit(state.copyWith(file: file));
+  }
+
+  void createBannerAd() {
+    bannerAd = BannerAd(
+      adUnitId: "ca-app-pub-3940256099942544/6300978111",
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          emit(state.copyWith(isLoadAd: true));
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+      size: AdSize.mediumRectangle,
+    );
+    bannerAd.load();
   }
 }
